@@ -10,21 +10,21 @@ def home():
     return "Bot is Online!"
 
 def run():
-    app.run(host='0.0.0.0', port=8080)
+  app.run(host='0.0.0.0', port=8080)
 
 def keep_alive():
-    t = Thread(target=run)
-    t.start()
+  t = Thread(target=run)
+  t.start()
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 class TicketSelect(discord.ui.Select):
     def __init__(self):
-        options = [
+        options=[
             discord.SelectOption(label="Purchase", description="Buy something"),
             discord.SelectOption(label="Claim Rewards", description="Claim reward"),
-            discord.SelectOption(label="General Support", description="Get help")
+            discord.SelectOption(label="General Support", description="Get Help")
         ]
         super().__init__(placeholder="Select a ticket type...", options=options, custom_id="ticket_select")
 
@@ -50,17 +50,17 @@ class TicketView(discord.ui.View):
 @bot.event
 async def on_ready():
     print(f"Bot Online as {bot.user}")
-    await bot.tree.sync()
+    try:
+        synced = await bot.tree.sync()
+        print(f"Synced {len(synced)} commands")
+    except Exception as e:
+        print(e)
 
 @bot.tree.command(name="ticketsetup", description="Send ticket panel")
 async def ticketsetup(interaction: discord.Interaction):
-    embed = discord.Embed(title="SUPPORT", description="Select ticket type below", color=0x00ff00)
+    embed = discord.Embed(title="SUPPORT", description="Select ticket type below", color=0x00FF00)
     await interaction.channel.send(embed=embed, view=TicketView())
     await interaction.response.send_message("Done", ephemeral=True)
-
-@bot.event
-async def on_ready():
-    print(f"Bot Online as {bot.user}")
 
 keep_alive()
 bot.run(os.getenv("TOKEN"))
