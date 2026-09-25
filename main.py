@@ -58,5 +58,9 @@ async def ticketsetup(interaction: discord.Interaction):
     await interaction.channel.send(embed=embed, view=TicketView())
     await interaction.response.send_message("Done", ephemeral=True)
 
+@bot.event
+async def on_ready():
+    print(f"Bot Online as {bot.user}")
+
 keep_alive()
 bot.run(os.getenv("TOKEN"))
