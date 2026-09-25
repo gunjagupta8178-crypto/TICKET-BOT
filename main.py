@@ -1,4 +1,4 @@
-import discord, os
+import discord, os, asyncio
 from discord.ext import commands
 from discord import app_commands
 from flask import Flask
@@ -61,6 +61,13 @@ async def ticketsetup(interaction: discord.Interaction):
     embed = discord.Embed(title="SUPPORT", description="Select ticket type below", color=0x00FF00)
     await interaction.channel.send(embed=embed, view=TicketView())
     await interaction.response.send_message("Done", ephemeral=True)
-
+@bot.tree.command(name="close", description="Close the ticket")
+async def close(interaction: discord.Interaction):
+    if "ticket-" in interaction.channel.name:
+        await interaction.response.send_message("Closing ticket in 3 seconds...")
+        await asyncio.sleep(3)
+        await interaction.channel.delete()
+    else:
+        await interaction.response.send_message("Ye ticket channel nahi hai!", ephemeral=True)
 keep_alive()
 bot.run(os.getenv("TOKEN"))
